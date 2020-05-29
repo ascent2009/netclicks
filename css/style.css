@@ -124,6 +124,7 @@ p {
 .left-menu.openMenu {
     height: 100%;
     background-color: #00838f;
+    transition: 0.5;
 }
 
 
@@ -339,6 +340,7 @@ p {
     margin-bottom: 5px;
     display: block;
     position: relative;
+    transition: 0.5s;
 }
 
 .active+.dropdown-list {
@@ -348,6 +350,7 @@ p {
     padding: 0;
     margin-left: 0;
     background: #4DD0E1;
+    transition: 0.5s;
 
 }
 
@@ -1067,7 +1070,8 @@ main {
 
 .loading {
     position: fixed;
-    background-color: #00838f;
+    background-color: #00838f opacity(0.2);
+    /* background-color: rgba(0, 0, 0, 0.2); */
     width: 12px;
     height: 12px;
     border-radius: 3px;
@@ -1216,4 +1220,21 @@ div:after {
         transform: translate(0, 0) scale(1) rotate(360deg);
         background-color: #00838f;
     }
+}
+
+.pagination {
+    margin: auto;
+    display: flex;
+    justify-content: space-around;
+    width: fit-content;
+
+}
+
+.pagination .pages {
+    text-decoration: underline;
+    margin-right: 15px;
+}
+
+.pagination .pages:active {
+    text-decoration: none;
 }
