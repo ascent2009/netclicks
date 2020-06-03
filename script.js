@@ -21,9 +21,11 @@ const modalLoader = document.querySelector(".preloader");
 
 const searchForm = document.querySelector(".search__form");
 const searchFormInput = document.querySelector(".search__form-input");
+const trailer = document.getElementById("trailer");
+const headTrailer = document.getElementById("headTrailer");
 
 const API_KEY = "d65d73a19d8a09225912fdb367897a59";
-const server = "https://api.themoviedb.org/3";
+const SERVER = "https://api.themoviedb.org/3";
 
 class DBService {
   getData = async (url) => {
@@ -45,28 +47,35 @@ class DBService {
   };
 
   getSearchResult = (query) => {
-    this.temp = `${server}/search/tv?api_key=${API_KEY}&language=ru-RU&query=${query}`;
+    this.temp = `${SERVER}/search/tv?api_key=${API_KEY}&language=ru-RU&query=${query}`;
     return this.getData(this.temp);
   };
 
   getNextPage = (page) => {
-    return this.getData(`${this.temp}&page=${page}`);
+    // return this.getData(`${this.temp}&page=${page}`);
+    return this.getData(this.temp + "&page=" + page);
   };
 
   getTvShow = (id) =>
-    this.getData(`${server}/tv/${id}?api_key=${API_KEY}&language=ru-RU`);
+    this.getData(`${SERVER}/tv/${id}?api_key=${API_KEY}&language=ru-RU`);
 
   getTopRated = () =>
-    this.getData(`${server}/tv/top_rated?api_key=${API_KEY}&language=ru-RU`);
+    this.getData(`${SERVER}/tv/top_rated?api_key=${API_KEY}&language=ru-RU`);
 
   getPopular = () =>
-    this.getData(`${server}/tv/popular?api_key=${API_KEY}&language=ru-RU`);
+    this.getData(`${SERVER}/tv/popular?api_key=${API_KEY}&language=ru-RU`);
 
   getWeek = () =>
-    this.getData(`${server}/tv/on_the_air?api_key=${API_KEY}&language=ru-RU`);
+    this.getData(`${SERVER}/tv/on_the_air?api_key=${API_KEY}&language=ru-RU`);
 
   getToday = () =>
-    this.getData(`${server}/tv/airing_today?api_key=${API_KEY}&language=ru-RU`);
+    this.getData(`${SERVER}/tv/airing_today?api_key=${API_KEY}&language=ru-RU`);
+
+  getTrailer = (id) => {
+    return this.getData(
+      `${SERVER}/tv/${id}/videos?api_key=${API_KEY}&language=ru-RU`
+    );
+  };
 }
 
 const renderCard = (response, target) => {
@@ -230,8 +239,29 @@ tvShowsList.addEventListener("click", (event) => {
         if (modalLink) {
           modalLink.href = response.homepage;
         }
+        return response.id;
       })
-
+      .then(new DBService().getTrailer)
+      .then((response) => {
+        headTrailer.classList.add("hide");
+        trailer.textContent = "";
+        if (response.results.length) {
+          headTrailer.classList.remove("hide");
+          response.results.forEach((element) => {
+            const trailerItem = document.createElement("li");
+            trailerItem.innerHTML = `<iframe
+          width="400"
+          height="300" 
+          src="https://www.youtube.com/embed/${element.key}"
+          frameborder="0"
+          allowfullscreen>
+          
+          </iframe>
+          <h4>${element.name}</h4>`;
+            trailer.append(trailerItem);
+          });
+        }
+      })
       .then(() => {
         document.body.style.overflow = "hidden";
         modal.style.backgroundColor = "transparent";
